@@ -1,0 +1,96 @@
+#!/usr/bin/perl
+
+# The script will copy the compressed backups to the backup server or NAS;
+# each backup into its separate folder, which is the same as the name of
+# the backup file/folder.
+# It needs that the acces to the backup server/NAS to be confiugred in the
+# ~/.ssh/config file with key access NOT password.
+#
+# Ex.: You have a backup file called test_backup_20210230.tar.bz2
+# then it will be copied into hostname:/path/to/backup/location/test/
+#
+# Written by xyz666.
+
+
+use warnings;
+use diagnostics;
+use File::Basename;
+
+
+my $bckp = 'hostname/IPv4_address:/path/to/where/the/backups/will/be/copied';
+
+
+my $backup_place = '/path/to/the/compressed/backups';
+my $port_number = 'servers_port_number'; 
+my ($name, $meta, $date);
+
+
+sub location_check{
+    
+    if (qx/pwd/ ne $backup_place){
+       chdir($backup_place) or die("Cannot change to folder! Exiting\n");
+    }
+
+}
+
+sub send_up{
+    
+    # Copies the backups to their remote location
+    # the "$name" variable is used as the folder name for
+    # the respective backup; in case you want to copy
+    # all backup files into a single location, remove the
+    # "$name" variable from the 'system' command
+
+    opendir my $local_dir, './' or die "Can`t open directory. Exiting!";
+    my @compressed_files = readdir $local_dir;
+    close $local_dir;
+
+    print "Sending files into the air!\n";
+    foreach my $comp (@compressed_files){
+
+        if ($comp =~ m/\.tar\.bz2/g){
+
+            ($name, $meta, $date) = split('_', $comp);
+
+            print "Moving weight: $name!\n";
+            system('scp -CP ' . $port_number . ' ' . $comp . ' ' . $bckp . $name . '/')
+
+        }
+        
+    }
+
+    return (@compressed_files);
+}
+
+sub clean_up {
+	
+    # Removes the backups from the local system, so
+    # the used space is freed up; can be disabled
+    # by commenting out the function call below
+    
+    my @file_ref = @_;
+    
+
+    print "Cleaning up!\n";
+    foreach my $file (@file_ref){
+
+        if ($file =~ /\.sql$/){
+
+            print "Deleting SQL File: $file\n";
+            system('rm ' . $file);
+
+        }
+
+        if ($file =~ /\.tar\.bz2$/){
+
+            print "Deleting TAR file: $file\n";
+            system('rm ' . $file);
+        }
+    }
+}
+
+
+#Call
+&location_check();
+my @tar_files = &send_up();
+&clean_up(@tar_files);

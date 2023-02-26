@@ -1,0 +1,60 @@
+#!/usr/bin/perl
+
+# The script will create backups of ewach databases that are specified in the
+# 'config' file, the names should be put in separate lines. It should be used
+# on systems where the memory is low, that is why the database server is
+# restarted so many times during the backup process, so the memory is freed up.
+# The 'BIG_db' variable will hold the name of the database that has a lot of data,
+# and which should be left as the last database to be backed up.
+#
+# Written by xyz666
+
+use warnings;
+use POSIX qw(strftime);
+use diagnostics;
+use File::Basename;
+
+sub backup{
+    
+    my $backup_user = '';
+    
+    my $backup_pass = '';
+    
+    my $BIG_db = '';
+
+    my $backup_place = '/path/to/where/the/backups/should/be/created/';
+
+    my $date = strftime "%Y%m%d", localtime;
+
+    my $configuration = dirname($0) . "/config";
+
+    open my $file_data, '<', $configuration or die "Can`t open the file! Exiting\n";
+
+    chomp(my @my_list = <$file_data>);
+
+    close $file_data;
+
+    chdir($backup_place) or die("Cannot change to folder! Exiting\n");
+
+    system('systemctl restart mysqld');
+
+    foreach (@my_list){    
+
+        if ($_ eq $BIG_db ){
+
+            system('systemctl restart mysqld');
+            # print "Restarting MySQL server\n";
+
+	    system("mysqldump -u $backup_user -p $backup_pass $_ > " .$_ . "_backup_$date.sql");
+            last;
+        }
+        # Backing up the rest of the DBs";
+        system("mysqldump -u $backup_user -p $backup_pass $_ > " . $_ . "_backup_$date.sql");
+
+    }
+
+    system('systemctl restart mysqld');
+}
+
+#Call
+&backup();

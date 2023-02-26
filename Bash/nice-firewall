@@ -1,0 +1,25 @@
+#!/bin/bash
+
+# Script that will change the Firewalld reloading process
+# niceness; usefull on servers where the reloading process
+# is run as a cronjob and the same process should finish
+# as soon as possible.
+#
+# Written by xyz666.
+
+
+# Reloading the firewall
+fierwall-cmd --reload
+
+# Getting the firewalld process ID
+processID() {
+    
+    pgrep firewalld
+
+}
+
+# Putting the process ID into a variable
+PID=$(processID)
+
+# Running the renice command to change the niceness of firewalld
+renice -n -10 -p $PID

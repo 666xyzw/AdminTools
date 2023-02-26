@@ -1,0 +1,51 @@
+#!/usr/bin/bash
+
+# Script that automates the backup keeping process.
+# Ex.: Your system is creating backups every day, but at the beginning of every month
+# you need only the last 7 backups of the last month, so you configure this script to
+# run every month, by this it will check the given backup directory, enumerates how
+# much files are in the directory and will delete the old files, leaving behind the
+# last 7.
+#
+# Written by xyz666
+
+
+#number of files in the dir (DO NOT CHANGE)
+fn=0
+
+#number of files that should remain in the folder (CAN BE CHANGED)
+bn=7
+
+#number of files that will be deleted (DO NOT CHANGE)
+dn=0
+
+#loop counter (DO NOT CHANGE)
+nr=0
+
+cd test_dir # directory where the backups are kept; CHANGE the "test_dir"
+
+#array of files in the directory
+FILES=`ls | egrep '[0-9]{8}'`
+
+#loops through the files and counts them
+for n in $FILES
+do
+    fn=$((fn+1))
+done
+
+#calculates how manny files will be deleted
+dn=$((fn-bn))
+
+#loops through the files until the nr var is lower than the dn var and deletes the old files
+for n in $FILES
+do
+    if [[ nr -lt $dn ]]
+    then
+
+        rm -f $n
+
+        nr=$((nr+1))
+    fi
+
+done
+

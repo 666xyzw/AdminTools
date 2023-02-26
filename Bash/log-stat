@@ -1,0 +1,21 @@
+#!/usr/bin/bash
+
+# Script that collects data from the 'passwd' file and system logs
+# for further check. The files can by checked by the "ports.py" and
+# "differ.py" scripts respectively. It must be run as root so it can
+# access files from the "/var/log" path.
+#
+# Written by xyz666
+
+#list the passwd file
+less /etc/passwd > /path/to/where/the/file/will/be/saved/pwd-prod
+
+#list open ports on the system
+netstat -tulpn | grep LISTEN > /path/to/where/the/file/will/be/saved/op-prod
+
+cd /var/log
+
+echo $PWD
+
+less secure-`date +%Y%m%d` | grep Failed >> /path/to/where/the/file/will/be/saved/attempt-`date +%Y%m%d`-prod
+less secure | grep Failed >> /path/to/where/the/file/will/be/saved/attempt-`date +%Y%m%d`-prod

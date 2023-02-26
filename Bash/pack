@@ -1,0 +1,54 @@
+#!/usr/bin/bash
+
+# Script that automates the compression of a backup file.
+#
+# Written by xyz666.
+
+
+
+#check if $DATE is empty
+if [ -z $DATE];
+then
+	export DATE=`date +%Y%m%d`
+fi
+
+#selecting only the name
+if [ -f ];
+then 	
+	if [[ "$1" =~ "_" ]];
+	then
+		
+		IFS='_' read -ra name <<< "$1"
+		echo $name
+
+	elif [[ "$1" =~ "." ]];
+	then
+
+		IFS='.' read -ra name <<< "$1"
+		echo $name
+
+	elif [[ "$1" != *[_.]* ]];
+	then
+
+		name=$1	
+
+	fi
+	
+fi
+
+#compressing the file/fodler
+echo "Compressing files!"
+
+if [ -z "$2" ];
+then
+	if [[ "$1" =~ "sql" ]];
+	then
+		tar cjf "$name"_backup_$DATE.sql.tar.bz2 $1
+	else
+		tar cjf "$name"_backup_$DATE.tar.bz2 $1
+	fi
+else
+	tar cjf "$name"_backup_$DATE.tar.bz2 $1 $2
+
+
+fi

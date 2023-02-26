@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# Shorthand script which takes an IPv4 address and calls
+# Firewalld to block it after which reloads the firewall.
+
+# Written by xyz666
+
+echo "Blocking $@ IP address!"
+
+firewall-cmd --add-rich-rule="rule family='ipv4' source address='$@' drop" --permanent
+
+echo "Reloading Firewall"
+firewall-cmd --reload

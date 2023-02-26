@@ -1,0 +1,36 @@
+#!/usr/bin/perl
+
+# The script uses the 'pack' bash script to compress the backup files,
+# in a directory. The 'pack' script should be placed in /usr/bin
+# for easy access.
+#
+# Written by xyz666
+
+use warnings;
+use diagnostics;
+use File::Basename;
+
+
+my $backup_place = '/path/to/where/the/backup/files/are/located';
+
+chdir($backup_place) or die("Cannot change to folder! Exiting\n");
+
+sub pack_up{
+    
+    # reads the folders content into the '@files' variable
+    opendir my $local_dir, './' or die "Can`t open directory. Exiting!";
+    chomp(my @files = readdir $local_dir);
+    close $local_dir;
+
+    print "Compressing!\n";
+
+    foreach (@files){
+
+        if ($_ =~ m/\.sql$/g){
+     
+            system('/usr/bin/pack ' . $_);
+        }
+    }
+}
+
+&pack_up();

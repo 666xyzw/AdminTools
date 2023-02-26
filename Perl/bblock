@@ -1,0 +1,50 @@
+#!/usr/bin/perl
+
+# Script that is used to batch block (bblock) IPv4 addresses from a file.
+# It uses the 'block' bash script to block the IPs on the Firewalld system.
+#
+# Written by xyz666
+
+
+use strict;
+use warnings;
+use diagnostics;
+
+
+my @ip_list;
+
+sub input_file{
+    #Subroutine that reads the file containing the IP addresses
+
+    open my $FH, '<', $ARGV[0] or die "Cannot open the file!\n";
+    chomp(@ip_list = <$FH>);
+    close($FH);
+
+    return @ip_list;
+
+}
+
+sub blocker{
+    #Subrooutine that parses the @ip_list variable and blocks each IP address separately by
+    #calling the block script
+
+    my @ips = @_;
+
+    foreach my $bad_ip (@ips){
+
+        if ($bad_ip =~ m/[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}/g){
+
+		print "Blocking $bad_ip on the firewall\n";
+
+    		system('block ' . $bad_ip);
+        }
+        else{
+
+            print "$bad_ip Not an IP address!\n";
+            next;
+        }
+    }
+
+}
+
+&blocker(&input_file($ARGV[0]));

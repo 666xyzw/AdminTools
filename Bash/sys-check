@@ -1,0 +1,19 @@
+#!/usr/bin/bash
+
+# Written by xyz666.
+# Script that checks if the bellow services are active or not.
+
+echo "Postfix Status: "
+systemctl status  postfix | grep Active
+
+echo "Dovecot Status: "
+systemctl status dovecot | grep Active
+
+echo "Spamassassin Status: "
+systemctl status spamassassin | grep Active
+
+echo "Amavis Status: "
+systemctl status amavis | grep Active
+
+echo "OpenDKIM Status: "
+systemctl status opendkim | grep Active

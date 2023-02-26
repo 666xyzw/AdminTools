@@ -1,0 +1,109 @@
+#!/bin/bash -
+
+# Script to automate the process of adding
+# new domains to the helo_checks/sender_access postfix configuration files.
+
+# Written by xyz666
+
+DOMAIN_NAME=$1
+FILE_NAME=$2
+
+cd /etc/postfix/
+
+presence_check() {
+	
+	# function to check if domain already exists in the file
+	grep $DOMAIN_NAME $FILE_NAME 
+
+}
+
+email_check() {
+
+   # function to check if whole email address exists in the file 
+   grep -P ".*@" <<<  $DOMAIN_NAME
+
+}
+
+if [ -z "$DOMAIN_NAME" ] || [ -z "$FILE_NAME" ]
+then
+    
+    echo "Wrong Usage!"
+    echo "Correct Usage: add_domain DOAMIN_NAME FILE_NAME"
+    echo "Where:"
+    echo "DOMAIN_NAME - the domain which you want to add to Postfix configuration"
+    echo "FILE_NAME - the Postfix configuration file that will be updated"
+
+else    
+
+    if [ $FILE_NAME == "helo_checks" ]
+    then
+
+	    CHECK_FLAG=$(presence_check)
+
+	    if [ -z "$CHECK_FLAG" ]
+	    then
+
+		    echo "$DOMAIN_NAME not found in the file!"
+		    echo "Adding domain to the file!"
+
+		    echo "$DOMAIN_NAME 				DISCARD" >> $FILE_NAME
+
+		    echo "Re-mapping the configurations"
+		    postmap $FILE_NAME
+
+		    echo "Reloading postfix service"
+		    systemctl reload postfix
+	
+	    else
+
+		    echo "$DOMAIN_NAME already in the system!"
+		    echo "Nothing to do!"
+
+ 	    fi
+
+    elif [ $FILE_NAME == "sender_access" ]
+    then
+	
+	    PRESENCE_CHECK_FLAG=$(presence_check)
+
+	    if [ -z "$PRESENCE_CHECK_FLAG" ]
+
+	    then
+
+		    echo "$DOMAIN_NAME not found in the file!"
+		    echo "Adding domain to the file!"
+            
+            ADDRESS_FLAG=$(email_check)
+
+            if [ -z $ADDRESS_FLAG ]
+            then    
+		        
+                echo "*@$DOMAIN_NAME 				DISCARD" >> $FILE_NAME
+
+		        echo "Re-mapping the configurations"
+		        postmap $FILE_NAME
+
+		        echo "Reloading postfix service"
+		        systemctl reload postfix
+
+            else
+
+                echo "$DOMAIN_NAME 				DISCARD" >> $FILE_NAME
+
+		        echo "Re-mapping the configurations"
+		        postmap $FILE_NAME
+
+		        echo "Reloading postfix service"
+		        systemctl reload postfix
+   
+	        fi
+
+	    else
+
+		    echo "$DOMAIN_NAME already in the system!"
+		    echo "Nothing to do!"
+	
+	    fi
+
+    fi
+fi
