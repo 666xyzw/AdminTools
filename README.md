@@ -82,3 +82,35 @@ Configure it as a cronjob.
 Will compress the backed up databases. It uses the `pack` bash script.
 
 Configure it as a cronjob.
+
+
+## PowerShell
+
+### Microsoft.PowerShell_profile
+This script will run each time you open a powershell console. To do this it has to be placed under `~/WindowsPowerShell`. It will search a remote drive for
+files and will display only those that are not in the exclude list (do not forget to open the file and set the necesarry parameters).
+
+### Search-Drive
+This script does the same as the `Microsoft.PowerShell_profile` the only difference is that it has to be run manually. It only contains the search function. If placed under `~/WindowsPowerShell`, it can be invoked like this `Search-Drive \path\to\drive \extensions\to\be\excluded\from\search`.
+
+## Python
+
+### IP_filter
+Script that processes data from `/var/log/secure` (RHEL) or `/var/log/auth.log` (Debian), by filtering those IPs that have tried to login on the system (by bruteforce); the filtered IPs are compiled into a csv file.
+
+### differ
+Script compares two files; kind off a home made "diff" command from the GNU/Linux system, but not that sophisticated.
+
+One is a local copy the other is a copy form the respective server (produced by `log-stat` script).
+
+It is used to see if something has changed over night on the respective server (what type of ports have been opened/closed or did the passwd file change; these are ICs [Indicators of Compromise]). In case something is of, the script will notify you, otherwise it will just tell, that "All lines match" and exit.
+
+ The script recognizes 3 "types of servers":
+
++ Production (prod)
++ Development (dev)
++ Clients (cli)
+
+
+### ports
+The script is used to process the output from `netstat`, which is run on the remote server, it will create a new file called "new_open_ports", this file will be used by the `differ.py` script, to compare the local copy of the data (about which you know that is solid) with the new data from the remote machine.
