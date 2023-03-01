@@ -23,6 +23,8 @@ Usage:
 block 192.168.1.102
 ```
 
+`Warning:` If you have a system with limited resources and a lot of IPs already on the firewall, then it is better to comment out the `reload` process and make it as a separate cronjob, because otherwise you will have some downtime.
+
 ### cleaner
 Deletes old backups on the system, and keeps only the last 7 of them (by default, this value can be changed).
 
@@ -62,4 +64,21 @@ This list can either pe shortened or expanded, depending of the admins needs.
 ## Perl
 
 ### backing
-Copies the created backups to a designated backup server or NAS.
+Copies the created backups to a designated backup server or NAS. For easier usage it is recomended that you configure an ssh key based login to the backup server.
+
+Configure it as a cronjob.
+
+### bblock
+Is used to block multiple IPs on the Firewalld system from a file, in batch format (hence bblock [batch block]). It uses the `block` bash script for this operation.
+
+`Warning:` If you have a system with limited resources and a lot of IPs, then it is better to comment out the `reload` process and make it as a separate cronjob, because otherwise you will have some downtime.    
+
+### dbb
+Database backup script. Will create backups of databases specified in the file.
+
+Configure it as a cronjob.
+
+### package
+Will compress the backed up databases. It uses the `pack` bash script.
+
+Configure it as a cronjob.
