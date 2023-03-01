@@ -1,7 +1,7 @@
 <#
     The script is used to check a remote drive for files that should
-    not be there. Ex.: your organization has a OneDrive set up for,
-    lets say time sheets, and other than the time sheets there should
+    not be there. Ex.: your organization has a network drive set up for,
+    lets say time sheets, and other than the time sheet files there should
     not be anything else on the drive. This means nothing besides:
     xls, xlsx, pdf or csv files. These file extensions will be given
     to the script (in the $FileExtensions variable) and it will omit
@@ -14,7 +14,6 @@
     exits.
 
     Written by xyz666
-
 #>
 
 $DrivePath = '\path\to\drive'
@@ -49,7 +48,7 @@ function CheckDate {
     if ($Data_from_File[-1] -ne $Current_Date) {
         
         Write-Host "Today I did not run!"
-        Write-Host "Executing the Search-OneDrive script"
+        Write-Host "Executing the Search-Drive script"
 
         Search-Drive $DrivePath $FileExtensions
 
@@ -57,7 +56,7 @@ function CheckDate {
         
     }else{
         
-        Write-Host "The Search-OneDrive script has run today already."
+        Write-Host "The Search-Drive script has run today already."
         Write-Host "Nothing to do!`r`n"
     }
 }
