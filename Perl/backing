@@ -17,11 +17,12 @@ use diagnostics;
 use File::Basename;
 
 
-my $bckp = 'hostname/IPv4_address:/path/to/where/the/backups/will/be/copied';
+my $bckp = 'hostname:/path/on/remote/machine/to/backup/place';
 
 
-my $backup_place = '/path/to/the/compressed/backups';
-my $port_number = 'servers_port_number'; 
+
+my $backup_place = '/path/on/local/machine/to/compressed/backups';
+my $port_number = ''; 
 my ($name, $meta, $date);
 
 
@@ -53,7 +54,7 @@ sub send_up{
             ($name, $meta, $date) = split('_', $comp);
 
             print "Moving weight: $name!\n";
-            system('scp -CP ' . $port_number . ' ' . $comp . ' ' . $bckp . $name . '/')
+            system('rsync -azxAXvP -e \'ssh -p '.$port_number.'\' '  . $comp . ' ' . $bckp . $name . '/')
 
         }
         
