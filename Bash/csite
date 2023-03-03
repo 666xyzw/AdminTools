@@ -1,0 +1,34 @@
+#!/usr/bin/bash -
+
+# Script that will compress backed up website folders.
+# It uses the "pack" bash script for the compression job.
+# 
+# Used as a cronjob.   
+#
+# Written by xyz666
+
+
+
+# location of the backed up fodlers on the system
+FOLDERS_LOCATION="/home/xyz666/Programing/Tests/comp"
+
+# list of folders that you want to compress
+FOLDERS_LIST=(folder1 folder2 folder3)
+
+
+if ! cd $FOLDERS_LOCATION &>/dev/null
+then
+    
+    echo "Can not change to ${FOLDERS_LOCATION}"
+    echo "Terminating script!"
+    exit 1    
+fi    
+
+# compressing folders
+for FOLDER in ${FOLDERS_LIST[@]}
+do
+    
+    #tar cjf ${FOLDER}_backup_`date +\%Y\%m\%d`.tar.bz2 $folders
+    pack $FOLDER
+
+done
