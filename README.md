@@ -30,6 +30,12 @@ Deletes old backups on the system, and keeps only the last 7 of them (by default
 
 Configure it as a cronjob.
 
+### csite
+Will create compressed version of backed up sites (hence csite [compress site]). It uses the 'pack' bash script for the compression process.
+The compression is done to save up space on the server and also for lower traffic on the network when transfering the data to a remote server.
+
+Configure it as a cronjob.
+
 ### log-stat
 Gathers log messages from `/var/log/messages` and the `/etc/passwd` file and writes them to a specified place on the system, given by the admin.
 These files can be later parsed by the `ports.py` and `differ.py` scripts.
