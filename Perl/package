@@ -11,7 +11,8 @@ use diagnostics;
 use File::Basename;
 
 
-my $backup_place = '/path/to/where/the/backup/files/are/located';
+my $backup_place = "/path/to/local/backup/folder";
+my $file_extension = "consider_files_with_this_extension";
 
 chdir($backup_place) or die("Cannot change to folder! Exiting\n");
 
@@ -25,8 +26,10 @@ sub pack_up{
     print "Compressing!\n";
 
     foreach (@files){
+        
+        next if ($_ eq "." or $_ eq "..");
 
-        if ($_ =~ m/\.sql$/g){
+        if ($_ =~ m/\.$file_extension$/g){
      
             system('/usr/bin/pack ' . $_);
         }
