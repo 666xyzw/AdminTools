@@ -9,8 +9,8 @@
 
 
 
-# location of the backed up fodlers on the system
-FOLDERS_LOCATION="/home/xyz666/Programing/Tests/comp"
+# location of the backed up folders on the system
+FOLDERS_LOCATION="/path/to/folders"
 
 # list of folders that you want to compress
 FOLDERS_LIST=(folder1 folder2 folder3)
